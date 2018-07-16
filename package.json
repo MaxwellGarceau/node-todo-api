@@ -1,0 +1,22 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "A \"To Do\" api that serves as a tutorial for learning Mongo.db. Part of The Complete Node.js Developer Course v2.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxwellGarceau/node-todo-api.git"
+  },
+  "author": "Max Garceau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaxwellGarceau/node-todo-api/issues"
+  },
+  "homepage": "https://github.com/MaxwellGarceau/node-todo-api#readme",
+  "dependencies": {
+    "mongodb": "^2.2.5"
+  }
+}
