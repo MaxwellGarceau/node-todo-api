@@ -1,4 +1,12 @@
-const MongoClient = require('mongodb').MongoClient;
+// const MongoClient = require('mongodb').MongoClient;
+const { MongoClient, ObjectID } = require('mongodb');
+
+// const obj = new ObjectID();
+// console.log('ObjectID: ', obj);
+
+// Destructuring Example
+// const user = { name: 'Max', age: 26 };
+// const { name } = user;
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
   if (error) {
@@ -26,7 +34,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
       return console.log('Unable to insert challenge exercise');
     }
 
-    console.log(JSON.stringify(result, undefined, 2));
+    console.log(result.ops[0]._id.getTimestamp());
   });
 
   db.close();
