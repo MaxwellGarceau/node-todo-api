@@ -18,7 +18,6 @@ const { User } = require('./../server/models/user');
 //   }
 //   console.log('Todos', todos);
 // });
-
 // Todo.findOne({
 //   _id: id
 // }).then((todo) => {
