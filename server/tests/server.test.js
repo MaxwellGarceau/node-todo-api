@@ -6,18 +6,23 @@ const { mongoose } = require('../db/mongoose');
 const { app } = require('./../server');
 const { Todo } = require('./../models/todo');
 
-const todos = [{
-  _id: new ObjectID(),
-  text: 'First test todo'
-}, {
-  _id: new ObjectID(),
-  text: 'Second test todo'
-}];
+const todos = [
+  {
+    _id: new ObjectID(),
+    text: 'First test todo'
+  },
+  {
+    _id: new ObjectID(),
+    text: 'Second test todo'
+  }
+];
 
 beforeEach((done) => {
-  Todo.remove({}).then(() => {
-    return Todo.insertMany(todos);
-  }).then(() => done());
+  Todo.remove({})
+    .then(() => {
+      return Todo.insertMany(todos);
+    })
+    .then(() => done());
 });
 
 describe('POST /todos', () => {
@@ -26,7 +31,7 @@ describe('POST /todos', () => {
 
     request(app)
       .post('/todos')
-      .send({text})
+      .send({ text })
       .expect(200)
       .expect((res) => {
         expect(res.body.text).toBe(text);
@@ -36,16 +41,17 @@ describe('POST /todos', () => {
           return done(err);
         }
 
-        Todo.find({text}).then((todos) => {
-          expect(todos.length).toBe(1);
-          expect(todos[0].text).toBe(text);
-          done();
-        }).catch((e) => done(e));
+        Todo.find({ text })
+          .then((todos) => {
+            expect(todos.length).toBe(1);
+            expect(todos[0].text).toBe(text);
+            done();
+          })
+          .catch((e) => done(e));
       });
   });
 
   it('should not create todo with invalid body data', (done) => {
-
     request(app)
       .post('/todos')
       .send({})
@@ -55,10 +61,12 @@ describe('POST /todos', () => {
           return done(err);
         }
 
-        Todo.find().then((todos) => {
-          expect(todos.length).toBe(2);
-          done();
-        }).catch((e) => done(e));
+        Todo.find()
+          .then((todos) => {
+            expect(todos.length).toBe(2);
+            done();
+          })
+          .catch((e) => done(e));
       });
   });
 });
@@ -76,7 +84,6 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
-
   it('should return todo doc', (done) => {
     request(app)
       .get(`/todos/${todos[0]._id.toHexString()}`)
@@ -100,17 +107,15 @@ describe('GET /todos/:id', () => {
     const id = '123notAnObjectId';
 
     // if (!ObjectID.isValid(id)) {
-      request(app)
-        .get(`/todos/${id}`)
-        .expect(404)
-        .end(done);
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(404)
+      .end(done);
     // }
   });
-
 });
 
 describe('DELETE /todos/:id', () => {
-
   it('should remove a todo', (done) => {
     const hexId = todos[1]._id.toHexString();
 
@@ -125,10 +130,12 @@ describe('DELETE /todos/:id', () => {
           return done(err);
         }
 
-        Todo.findById(hexId).then((todo) => {
-          expect(todo).toNotExist();
-          done();
-        }).catch((e) => done());
+        Todo.findById(hexId)
+          .then((todo) => {
+            expect(todo).toNotExist();
+            done();
+          })
+          .catch((e) => done());
       });
   });
 
@@ -144,10 +151,51 @@ describe('DELETE /todos/:id', () => {
   it('should return 404 if object is is invalid', (done) => {
     const id = '123notAnObjectId';
 
-      request(app)
-        .delete(`/todos/${id}`)
-        .expect(404)
-        .end(done);
-    });
-  // });
+    request(app)
+      .delete(`/todos/${id}`)
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH /todos/:id', () => {
+  it('should update the todo', (done) => {
+    const todoBeforeUpdate = todos[0];
+    const hexId = todoBeforeUpdate._id.toHexString();
+    const body = {
+      text: 'I have been updated!',
+      completed: true
+    };
+
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send(body)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(body.text);
+        expect(res.body.todo.completed).toBe(true);
+        expect(res.body.todo.completedAt).toBeA('number');
+      })
+      .end(done);
+  });
+
+  it('should clear completedAt when todo is not completed', (done) => {
+    const todoBeforeUpdate = todos[1];
+    const hexId = todoBeforeUpdate._id.toHexString();
+    const body = {
+      text: "I have been updated....and I'm the second todo!",
+      completed: false
+    };
+
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send(body)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(body.text);
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completedAt).toNotExist();
+      })
+      .end(done);
+  });
 });
