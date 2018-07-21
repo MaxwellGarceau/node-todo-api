@@ -4,12 +4,16 @@
   "description": "A \"To Do\" api that serves as a tutorial for learning Mongo.db. Part of The Complete Node.js Developer Course v2.",
   "main": "index.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MaxwellGarceau/node-todo-api.git"
+  },
+  "engines": {
+    "node": "10.5.0"
   },
   "author": "Max Garceau",
   "license": "ISC",
