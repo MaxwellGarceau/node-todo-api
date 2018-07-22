@@ -14,6 +14,7 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
+// POST /todos
 app.post('/todos', (req, res) => {
   // console.log(req.body);
   const todo = new Todo({
@@ -75,7 +76,6 @@ app.delete('/todos/:id', (req, res) => {
 });
 
 // PATCH /todos/:id
-
 app.patch('/todos/:id', (req, res) => {
   const id = req.params.id;
   const body = _.pick(req.body, ['text', 'completed']);
