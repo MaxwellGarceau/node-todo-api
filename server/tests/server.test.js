@@ -134,7 +134,7 @@ describe('DELETE /todos/:id', () => {
       .end(done);
   });
 
-  it('should return 404 if object is is invalid', (done) => {
+  it('should return 404 if object is invalid', (done) => {
     const id = '123notAnObjectId';
 
     request(app)
@@ -310,5 +310,24 @@ describe('POST /users/login', () => {
           done();
         }).catch((e) => done(e));
       });
+  });
+});
+
+describe('DELETE /users/me/token', () => {
+  it('should remove auth token on logout', (done) => {
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toBe(0);
+          done();
+        }).catch((e) => done(e));
+      })
   });
 });
